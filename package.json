@@ -2,9 +2,22 @@
   "name": "lumina",
   "version": "1.0.0",
   "description": "An AI Discord Assistant (inspired by Puch AI)",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "web": "node web/server.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.15.3",
+    "mongoose": "^8.3.0",
+    "axios": "^1.6.8",
+    "node-cron": "^3.0.3",
+    "express": "^4.19.2",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   },
   "author": "Mahesh",
   "license": "ISC"
