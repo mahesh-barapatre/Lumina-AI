@@ -1,0 +1,11 @@
+{
+  "name": "lumina",
+  "version": "1.0.0",
+  "description": "An AI Discord Assistant (inspired by Puch AI)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mahesh",
+  "license": "ISC"
+}
