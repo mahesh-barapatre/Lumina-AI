@@ -6,7 +6,11 @@ const reminderSchema = new mongoose.Schema({
   channelId: { type: String, required: true },
   text: { type: String, required: true },
   runAt: { type: Date, required: true },
-  status: { type: String, enum: ["scheduled", "sent"], default: "scheduled" },
+  status: {
+    type: String,
+    enum: ["scheduled", "sent", "cancelled"],
+    default: "scheduled",
+  },
   createdAt: { type: Date, default: Date.now },
 });
 
