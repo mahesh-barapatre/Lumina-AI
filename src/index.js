@@ -3,6 +3,9 @@ const { Client, GatewayIntentBits, Collection } = require("discord.js");
 const fs = require("fs");
 const path = require("path");
 const logger = require("./logger");
+const connectDB = require("../services/db");
+const startScheduler = require("../services/scheduler");
+// const Reminder = require("../models/Reminder");
 
 // Create bot client
 const client = new Client({
@@ -32,7 +35,23 @@ for (const file of commandFiles) {
 }
 
 // Ready event
-client.once("clientReady", () => {
+client.once("clientReady", async () => {
+  // await connectDB(
+  //   (async () => {
+  //     const test = new Reminder({
+  //       userId: "YOUR_DISCORD_ID",
+  //       channelId: "YOUR_CHANNEL_ID",
+  //       text: "Testing Mongo save",
+  //       runAt: new Date(Date.now() + 60000), // 1 min from now
+  //       status: "scheduled",
+  //       createdAt: new Date(),
+  //     });
+  //     await test.save();
+  //     console.log("✅ Manual reminder saved");
+  //   })()
+  // );
+  await connectDB(); // // connect Mongo
+  startScheduler(client); // start cron
   logger.info(`✅ Logged in as ${client.user.tag}`);
   require("../web/server"); // Start health server
 });
