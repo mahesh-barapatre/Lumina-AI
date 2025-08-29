@@ -5,6 +5,8 @@ const path = require("path");
 const logger = require("./logger");
 const connectDB = require("../services/db");
 const startScheduler = require("../services/scheduler");
+const chrono = require("chrono-node");
+const Reminder = require("../models/Reminder");
 // const Reminder = require("../models/Reminder");
 
 // Create bot client
@@ -74,6 +76,50 @@ client.on("interactionCreate", async (interaction) => {
       content: "❌ Error executing command",
       ephemeral: true,
     });
+  }
+});
+
+//more natural way to set reminder
+client.on("messageCreate", async (message) => {
+  if (message.author.bot) return; // ignore bot messages
+
+  const content = message.content.toLowerCase();
+
+  // trigger only if user types something like: "remind me ..."
+  if (content.startsWith("remind me")) {
+    // parse date/time
+    const parsedDate = chrono.parseDate(content, new Date(), {
+      forwardDate: true,
+    });
+
+    if (!parsedDate) {
+      return message.reply("❌ Sorry, I couldn’t understand the time.");
+    }
+
+    // get reminder text (remove "remind me" and the time expression)
+    const match = chrono.parse(content)[0];
+    const reminderText = content
+      .replace(/remind me/i, "") // remove the phrase
+      .replace(match.text, "") // remove the date expression chrono recognized
+      .trim();
+
+    // Save reminder to DB
+    const reminder = new Reminder({
+      userId: message.author.id,
+      channelId: message.channel.id,
+      text: reminderText || "No text provided",
+      runAt: parsedDate,
+      status: "scheduled",
+      createdAt: new Date(),
+    });
+
+    await reminder.save();
+
+    return message.reply(
+      `⏰ Got it! I'll remind you at **${parsedDate}**: "${
+        reminderText || "No text"
+      }"`
+    );
   }
 });
 
