@@ -15,3 +15,7 @@
 ### 🎥 Video Demo
 
 [Watch Lumina in action](https://www.loom.com/share/your-demo-link)
+
+## ✅ Testing
+
+See [TESTS.md](./TESTS.md) for a full manual test script.
