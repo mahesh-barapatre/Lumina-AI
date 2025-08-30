@@ -90,6 +90,62 @@
 // "remind me in 2 hours"
 
 // commands/remind.js
+// const { SlashCommandBuilder } = require("discord.js");
+// const chrono = require("chrono-node");
+// const dayjs = require("../services/dayjs");
+// const Reminder = require("../models/Reminder");
+
+// module.exports = {
+//   data: new SlashCommandBuilder()
+//     .setName("remind")
+//     .setDescription("Set a reminder")
+//     .addStringOption((opt) =>
+//       opt
+//         .setName("input")
+//         .setDescription('E.g. "remind me to call mom at 7pm"')
+//         .setRequired(true)
+//     ),
+
+//   async execute(interaction) {
+//     const input = interaction.options.getString("input");
+//     const userId = interaction.user.id;
+//     const channelId = interaction.channel.id;
+
+//     // Parse with chrono
+//     const parsed = chrono.parse(input, new Date(), { forwardDate: true });
+//     if (!parsed || parsed.length === 0) {
+//       return interaction.reply("❌ Could not understand the time.");
+//     }
+
+//     const runAt = parsed[0].start.date();
+//     const reminderText =
+//       input.replace(parsed[0].text, "").trim() || "Reminder!";
+
+//     // Save
+//     const reminder = await Reminder.create({
+//       userId,
+//       channelId,
+//       text: reminderText,
+//       runAt,
+//       status: "scheduled",
+//       createdAt: new Date(),
+//     });
+
+//     await interaction.reply(
+//       `⏰ Reminder set for **${dayjs(runAt).format(
+//         "YYYY-MM-DD HH:mm"
+//       )}**: "${reminderText}" (ID: ${reminder._id})`
+//     );
+//   },
+// };
+
+// more Human like Natural Parsing with llm/Chrono
+// Update /remind to accept free text
+// like:
+// "remind me to call mom at 7pm"
+// "remind me in 2 hours"
+
+// commands/remind.js
 const { SlashCommandBuilder } = require("discord.js");
 const chrono = require("chrono-node");
 const dayjs = require("../services/dayjs");
@@ -108,20 +164,37 @@ module.exports = {
 
   async execute(interaction) {
     const input = interaction.options.getString("input");
+    await module.exports.handleRemind(interaction, input);
+  },
+
+  // // Function usable by AI router
+  // async executeFromAI(interaction, args) {
+  //   // args: { text, time } optional
+  //   const input = args?.time
+  //     ? `remind me to ${args.text} at ${args.time}`
+  //     : `remind me to ${args.text}`;
+  //   await module.exports.handleRemind(interaction, input);
+  // },
+
+  // Shared reminder handler
+  async handleRemind(interaction, input) {
     const userId = interaction.user.id;
     const channelId = interaction.channel.id;
-
-    // Parse with chrono
-    const parsed = chrono.parse(input, new Date(), { forwardDate: true });
+    // console.log(input);
+    // Parse time with chrono
+    const parsed = chrono.parse(input, new Date(), {
+      forwardDate: true,
+    });
     if (!parsed || parsed.length === 0) {
-      return interaction.reply("❌ Could not understand the time.");
+      return interaction.editReply("❌ Could not understand the time.");
     }
+    // console.log(parsed);
 
     const runAt = parsed[0].start.date();
     const reminderText =
       input.replace(parsed[0].text, "").trim() || "Reminder!";
 
-    // Save
+    // Save to DB
     const reminder = await Reminder.create({
       userId,
       channelId,
@@ -131,6 +204,10 @@ module.exports = {
       createdAt: new Date(),
     });
 
+    //edit - change reply->editReply so that the ai command will run
+    //interaction already done error
+    //cause after "await interaction.deferReply();" we can only use editReply
+    //but in normal deferReply() is not so reply() will be used
     await interaction.reply(
       `⏰ Reminder set for **${dayjs(runAt).format(
         "YYYY-MM-DD HH:mm"
