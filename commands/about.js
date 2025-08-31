@@ -7,8 +7,8 @@ module.exports = {
   async execute(interaction) {
     await interaction.reply(
       "✨ I’m Lumina, your personal Discord AI assistant!\n\n" +
-        "Built by [Your Name]. Inspired by Puch AI. 💡\n" +
-        "Repo: https://github.com/your-repo\n" +
+        "Built by Mahesh. Inspired by Puch AI. 💡\n" +
+        "Repo: https://github.com/mahesh-barapatre/Lumina-AI\n" +
         "Demo video: [coming soon]"
     );
   },
