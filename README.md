@@ -5,6 +5,13 @@ From reminders to meet links, music to hangouts, Lumina brings intelligence righ
 
 ---
 
+## 🚀 Get Started
+
+- 🌍 Curious? **Try the public server** → [Join here](https://discord.gg/9m7U5cAs)
+- 🔒 Want full control? **Build your own private server** → [Setup guide](https://discord.com/oauth2/authorize?client_id=1410312752840573064&permissions=2147567616&integration_type=0&scope=bot+applications.commands)
+
+---
+
 ## ✨ Features
 
 - ⏰ **Reminders** – Set personal reminders that DM you at the right time
@@ -33,7 +40,7 @@ From reminders to meet links, music to hangouts, Lumina brings intelligence righ
 
 ## 🏗️ Architecture
 
-_(Insert architecture diagram here — leave a space for you to draw)_
+![Lumina Architecture Design/Flow](./assets/LuminaDesign.png)
 
 **High-level flow:**
 
