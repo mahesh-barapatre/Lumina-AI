@@ -9,7 +9,6 @@ From reminders to meet links, music to hangouts, Lumina brings intelligence righ
 
 - ⏰ **Reminders** – Set personal reminders that DM you at the right time
 - 📅 **Google Meet Integration** – Create Meet links instantly
-- 📱 **Caller Lookup** – Find details on unknown numbers (via API)
 - 🎵 **Music Suggestions** – Get music recommendations from Spotify
 - 📢 **Event Updates** – Fetch upcoming events from Google Calendar
 - 🍽️ **Hangout Spots** – Suggest nearby restaurants & places using Google Places API
@@ -21,13 +20,13 @@ From reminders to meet links, music to hangouts, Lumina brings intelligence righ
 
 - **Backend Runtime**: Node.js (JavaScript)
 - **Database**: MongoDB Atlas (cloud-hosted)
-- **AI Integration**: Groq API (LLM for intent extraction)
+- **AI Integration**: Gemini API (LLM for intent extraction)
 - **APIs Used**:
   - Google Calendar + Google Meet API
   - Spotify API
   - Google Places API
 - **Scheduling**: `node-cron`
-- **Hosting**: Render / Railway (free-tier deployment)
+- **Hosting**: Render (free-tier deployment)
 - **Secrets Management**: `.env`
 
 ---
@@ -56,10 +55,13 @@ cd lumina-discord-bot
 
 ### 2️⃣ Install Dependencies
 
+```bash
 npm install
+```
 
 ### 3️⃣ Configure .env File
 
+```bash
 # Discord
 
 DISCORD_TOKEN=your_discord_bot_token
@@ -83,23 +85,29 @@ SPOTIFY_REDIRECT_URI=your_spotify_redirect_uri
 
 # AI Model
 
-GROQ_API_KEY=your_groq_api_key
+GEMINI_API_KEY=your_LLM_api_key
+```
 
 ### 4️⃣ Run the Bot Locally
 
+```bash
 npm run dev
+```
 
 ## 📜 Available Commands
 
-| Command                | Description                          |
-| ---------------------- | ------------------------------------ |
-| `/remind <time> <msg>` | Set a reminder at given time         |
-| `/meet`                | Create a Google Meet link            |
-| `/events`              | Show upcoming Google Calendar events |
-| `/music <mood>`        | Suggest music from Spotify           |
-| `/hangout <location>`  | Recommend restaurants & spots nearby |
-| `/whois <number>`      | Lookup caller information            |
-| `/help`                | List all available commands          |
+| Command                | Description                                  |
+| ---------------------- | -------------------------------------------- |
+| `/remind <time> <msg>` | Set a reminder at given time                 |
+| `/remainders`          | Show all your active reminders               |
+| `/meet`                | Create a Google Meet link                    |
+| `/meetnow`             | Instantly start a Google Meet link           |
+| `/events`              | Show upcoming Google Calendar events         |
+| `/music <mood>`        | Suggest music from Spotify                   |
+| `/hangout <location>`  | Recommend restaurants & spots nearby         |
+| `/whois <number>`      | Lookup caller information                    |
+| `/about`               | Learn more about Taskra (features & credits) |
+| `/help`                | List all available commands                  |
 
 ---
 

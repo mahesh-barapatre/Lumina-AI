@@ -42,74 +42,85 @@ module.exports = {
     ),
 
   async execute(interaction) {
-    await interaction.deferReply();
-
     const sub = interaction.options.getSubcommand();
+    await interaction.deferReply();
+    if (sub === "mood") {
+      const mood = interaction.options.getString("mood");
+      await module.exports.handleMusic(interaction, mood);
+    }
+    if (sub === "random") {
+      await module.exports.handleRandomMusic(interaction);
+    }
+    return interaction.editReply("❌ Unknown subcommand.");
+  },
+
+  // Shared Music handler
+  async handleMusic(interaction, mood) {
     try {
-      if (sub === "mood") {
-        const mood = interaction.options.getString("mood");
-        const query = moodToQuery(mood);
+      const query = moodToQuery(mood);
 
-        const tracks = await getTracksForMood(query, 3);
-        if (!tracks.length) {
-          return interaction.editReply(
-            `❌ Couldn't find tracks for **${mood}**.`
-          );
-        }
-
-        const embeds = tracks.map((t) =>
-          new EmbedBuilder()
-            .setTitle(`${t.name}`)
-            .setURL(t.url)
-            .setDescription(`by **${t.artists}**`)
-            .setThumbnail(t.albumImage || null)
-            .setColor(0x1db954)
-            .addFields(
-              ...(t.previewUrl
-                ? [{ name: "Preview", value: t.previewUrl }]
-                : [])
-            )
+      const tracks = await getTracksForMood(query, 3);
+      if (!tracks.length) {
+        return interaction.editReply(
+          `❌ Couldn't find tracks for **${mood}**.`
         );
-
-        return interaction.editReply({
-          content: `🎧 Mood: **${mood}** → ${tracks
-            .map((t) => `[${t.name}](${t.url})`)
-            .join(" • ")}`,
-          embeds,
-        });
       }
 
-      if (sub === "random") {
-        const seed = dailySeed(interaction.user.id);
-        const [q] = pickN(RANDOM_QUERIES, 1, seed);
-        const tracks = await getTracksForMood(q, 3);
+      const embeds = tracks.map((t) =>
+        new EmbedBuilder()
+          .setTitle(`${t.name}`)
+          .setURL(t.url)
+          .setDescription(`by **${t.artists}**`)
+          .setThumbnail(t.albumImage || null)
+          .setColor(0x1db954)
+          .addFields(
+            ...(t.previewUrl ? [{ name: "Preview", value: t.previewUrl }] : [])
+          )
+      );
 
-        if (!tracks.length) {
-          return interaction.editReply(
-            "❌ Couldn't find random picks today. Try again later."
-          );
-        }
-
-        const embeds = tracks.map((t) =>
-          new EmbedBuilder()
-            .setTitle(`${t.name}`)
-            .setURL(t.url)
-            .setDescription(`by **${t.artists}**`)
-            .setThumbnail(t.albumImage || null)
-            .setColor(0x1db954)
-        );
-
-        return interaction.editReply({
-          content: `🎲 Daily random based on **${q}** → ${tracks
-            .map((t) => `[${t.name}](${t.url})`)
-            .join(" • ")}`,
-          embeds,
-        });
-      }
-
-      return interaction.editReply("❌ Unknown subcommand.");
+      return interaction.editReply({
+        content: `🎧 Mood: **${mood}** → ${tracks
+          .map((t) => `[${t.name}](${t.url})`)
+          .join(" • ")}`,
+        embeds,
+      });
     } catch (err) {
       console.error("Error in /music:", err?.response?.data || err);
+      return interaction.editReply(
+        "❌ Failed to fetch music. Please try again."
+      );
+    }
+  },
+
+  async handleRandomMusic(interaction) {
+    try {
+      const seed = dailySeed(interaction.user.id);
+      const [q] = pickN(RANDOM_QUERIES, 1, seed);
+      const tracks = await getTracksForMood(q, 3);
+
+      if (!tracks.length) {
+        return interaction.editReply(
+          "❌ Couldn't find random picks today. Try again later."
+        );
+      }
+
+      const embeds = tracks.map((t) =>
+        new EmbedBuilder()
+          .setTitle(`${t.name}`)
+          .setURL(t.url)
+          .setDescription(`by **${t.artists}**`)
+          .setThumbnail(t.albumImage || null)
+          .setColor(0x1db954)
+      );
+
+      return interaction.editReply({
+        content: `🎲 Daily random based on **${q}** → ${tracks
+          .map((t) => `[${t.name}](${t.url})`)
+          .join(" • ")}`,
+        embeds,
+      });
+    } catch (error) {
+      console.error("Error in /music random:", err?.response?.data || err);
       return interaction.editReply(
         "❌ Failed to fetch music. Please try again."
       );

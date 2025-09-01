@@ -12,33 +12,46 @@ module.exports = {
       .setColor("Blurple") // Discord’s main color
       .addFields(
         {
-          name: "📅 Calendar",
-          value: [
-            "`/events today` → Shows today’s agenda",
-            "`/events tomorrow` → Shows tomorrow’s agenda",
-            "`/events 2025-09-01` → Natural language/date parsing (via chrono)",
-          ].join("\n"),
-        },
-        {
-          name: "🎥 Meetings",
-          value: [
-            "`/meet now` → Start an instant 30-min Google Meet",
-            "`/meet <time>` → Schedule a meeting at a given time",
-          ].join("\n"),
-        },
-        {
           name: "⚙️ General",
           value: [
+            "`/ai input=...` → Chat with Lumina (AI free-text)",
             "`/help` → Show this menu",
-            "`/link` → Link your Google account",
+            "`/about` → Project info & credits",
           ].join("\n"),
         },
         {
           name: "⏰ Reminders",
           value: [
-            "`/remind in 10 minutes take a break` → Set reminder",
+            "`/remind text=take a break time=10m` → Set a reminder",
             "`/remind-cancel <id>` → Cancel a reminder",
             "`/reminders` → List active reminders",
+          ].join("\n"),
+        },
+        {
+          name: "🎥 Meetings",
+          value: [
+            "`/meet topic=Team Sync` → Create a Meet link",
+            "`/meetnow` → Start an instant Meet",
+          ].join("\n"),
+        },
+        {
+          name: "🎵 Music",
+          value: [
+            "`/music mood=chill` → Get Spotify tracks for a mood",
+            "`/music random` → Get random daily picks",
+          ].join("\n"),
+        },
+        {
+          name: "🍽️ Hangouts",
+          value: [
+            "`/hangout near=Delhi type=cafe` → Find top places nearby",
+          ].join("\n"),
+        },
+        {
+          name: "📅 Events",
+          value: [
+            "`/events today` → Show today’s events/news",
+            "`/events tomorrow` → Show tomorrow’s",
           ].join("\n"),
         }
       )

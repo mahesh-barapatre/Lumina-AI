@@ -12,18 +12,24 @@ module.exports = {
 
   async execute(interaction) {
     const id = interaction.options.getString("id");
+    await interaction.deferReply();
+    await module.exports.handleRemindCancel(interaction, id);
+  },
+
+  // Shared reminder handler
+  async handleRemindCancel(interaction, id) {
     const reminder = await Reminder.findOne({
       _id: id,
       userId: interaction.user.id,
     });
 
     if (!reminder) {
-      return interaction.reply("❌ Reminder not found.");
+      return interaction.editReply("❌ Reminder not found.");
     }
 
     reminder.status = "cancelled";
     await reminder.save();
 
-    await interaction.reply(`🗑️ Reminder "${reminder.text}" cancelled.`);
+    await interaction.editReply(`🗑️ Reminder "${reminder.text}" cancelled.`);
   },
 };

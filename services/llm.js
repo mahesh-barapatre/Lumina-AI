@@ -7,13 +7,26 @@ const ai = new GoogleGenAI({
 async function parseIntent(text) {
   try {
     const prompt = `
-You are a Discord assistant. Parse the user's text into a strict JSON with:
-- action: "remind", "meet", or "unknown"
-- args: object with relevant fields (e.g., text, time)
-If you can't understand, return { "action": "unknown", "args": {} }.
+You are a Discord assistant. Parse the user's text into a strict JSON object with:
+- action: one of ["remind", "reminders", "remind-cancel", "meet", "meetnow", "events", "music", "hangout", "about", "help", "unknown"]
+- args: object with relevant fields depending on the action:
+  - remind → { "text": string, "time": string }
+  - reminders → {}
+  - remind-cancel → { "id": string }
+  - meet → {"when": string, "title": string}
+  - meetnow → {}
+  - events → {"when": string}
+  - music → { "mood": string }
+  - random-music -> {}
+  - hangout → { "near": string, "type": string }
+  - about → {}
+  - help → {}
+If the intent cannot be confidently understood, return:
+{ "action": "unknown", "args": {} }
 
 User text: """${text}"""
-Return ONLY JSON.
+Return ONLY valid JSON (no explanations).
+
 `;
     console.log(text, "this is the text");
 

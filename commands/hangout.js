@@ -17,12 +17,15 @@ module.exports = {
     ),
 
   async execute(interaction) {
+    const near = interaction.options.getString("near");
+    const type = interaction.options.getString("type");
     await interaction.deferReply();
+    await module.exports.handleHangout(interaction, near, type);
+  },
 
+  // Shared Hangout handler
+  async handleHangout(interaction, near, type) {
     try {
-      const near = interaction.options.getString("near");
-      const type = interaction.options.getString("type");
-
       const { lat, lng } = await geocodeLocation(near);
       const places = await findPlaces(lat, lng, type);
 

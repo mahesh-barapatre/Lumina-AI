@@ -17,10 +17,14 @@ module.exports = {
     ),
 
   async execute(interaction) {
+    const whenInput = interaction.options.getString("when");
     await interaction.deferReply();
+    await module.exports.handleEvents(interaction, whenInput);
+  },
 
+  // Shared Events handler
+  async handleEvents(interaction, whenInput) {
     try {
-      const whenInput = interaction.options.getString("when");
       const now = new Date();
       let targetDate;
 
