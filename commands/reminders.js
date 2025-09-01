@@ -9,6 +9,12 @@ module.exports = {
     .setDescription("List your upcoming reminders"),
 
   async execute(interaction) {
+    await interaction.deferReply();
+    await module.exports.handleReminders(interaction, input);
+  },
+
+  //shared Handler
+  async handleReminders(interaction) {
     const reminders = await Reminder.find({
       userId: interaction.user.id,
       status: "scheduled",
@@ -18,7 +24,7 @@ module.exports = {
       .limit(10);
 
     if (reminders.length === 0) {
-      return interaction.reply("✅ You have no upcoming reminders.");
+      return interaction.editReply("✅ You have no upcoming reminders.");
     }
 
     const list = reminders
@@ -30,6 +36,6 @@ module.exports = {
       )
       .join("\n");
 
-    await interaction.reply(`📋 Your reminders:\n${list}`);
+    await interaction.editReply(`📋 Your reminders:\n${list}`);
   },
 };

@@ -18,17 +18,26 @@ module.exports = {
     ),
 
   async execute(interaction) {
-    try {
-      // Get user inputs
-      const title = interaction.options.getString("title");
-      const whenInput = interaction.options.getString("when");
+    // Get user inputs
+    const title = interaction.options.getString("title");
+    const whenInput = interaction.options.getString("when");
 
+    await interaction.deferReply();
+    await module.exports.handleMeet(interaction, whenInput, title);
+  },
+
+  // Shared reminder handler
+  async handleMeet(interaction, whenInput, title) {
+    try {
       // Parse natural language date/time
       const startTime = chrono.parseDate(whenInput, new Date(), {
         forwardDate: true, // ensure future date if ambiguous
       });
+      console.log(whenInput, "time", startTime);
       if (!startTime) {
-        return interaction.reply("❌ Could not understand the time you gave.");
+        return interaction.editReply(
+          "❌ Could not understand the time you gave."
+        );
       }
 
       // Default meeting = 30 mins
@@ -37,7 +46,7 @@ module.exports = {
       // Get OAuth client for this user
       const client = await getOAuthClient(interaction.user.id);
       if (!client) {
-        return interaction.reply(
+        return interaction.editReply(
           `⚠️ You need to link Google first: [Click here](http://localhost:3000/oauth/google/start?discordUserId=${interaction.user.id})`
         );
       }
@@ -68,13 +77,15 @@ module.exports = {
       )?.uri;
 
       if (!meetLink) {
-        return interaction.reply("⚠️ Event created but Meet link not found.");
+        return interaction.editReply(
+          "⚠️ Event created but Meet link not found."
+        );
       }
 
-      await interaction.reply(`✅ Meet created: [Join here](${meetLink})`);
+      await interaction.editReply(`✅ Meet created: [Join here](${meetLink})`);
     } catch (err) {
       console.error("Error creating meet:", err);
-      await interaction.reply("❌ Failed to create Meet. Try again later.");
+      await interaction.editReply("❌ Failed to create Meet. Try again later.");
     }
   },
 };

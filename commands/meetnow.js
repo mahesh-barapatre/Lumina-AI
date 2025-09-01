@@ -9,16 +9,22 @@ module.exports = {
     .setDescription("Start a quick 30-min Google Meet"),
 
   async execute(interaction) {
+    await interaction.deferReply();
+    await module.exports.handleMeetNow(interaction);
+  },
+
+  // Shared reminder handler
+  async handleMeetNow(interaction) {
     // 1️⃣ Check rate limit first
     if (!checkCooldown(interaction.user.id, "meetnow", 30000)) {
-      return interaction.reply({
+      return interaction.editReply({
         content: "⚠️ Please wait 30 seconds before creating another meet",
         ephemeral: true,
       });
     }
 
     // 2️⃣ Defer reply because Google API may take time
-    await interaction.deferReply();
+    //already done
 
     // 3️⃣ Get Google OAuth client
     const client = await getOAuthClient(interaction.user.id);

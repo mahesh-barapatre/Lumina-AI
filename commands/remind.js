@@ -164,23 +164,15 @@ module.exports = {
 
   async execute(interaction) {
     const input = interaction.options.getString("input");
+    await interaction.deferReply();
     await module.exports.handleRemind(interaction, input);
   },
-
-  // // Function usable by AI router
-  // async executeFromAI(interaction, args) {
-  //   // args: { text, time } optional
-  //   const input = args?.time
-  //     ? `remind me to ${args.text} at ${args.time}`
-  //     : `remind me to ${args.text}`;
-  //   await module.exports.handleRemind(interaction, input);
-  // },
 
   // Shared reminder handler
   async handleRemind(interaction, input) {
     const userId = interaction.user.id;
     const channelId = interaction.channel.id;
-    // console.log(input);
+    console.log(input);
     // Parse time with chrono
     const parsed = chrono.parse(input, new Date(), {
       forwardDate: true,
@@ -204,11 +196,7 @@ module.exports = {
       createdAt: new Date(),
     });
 
-    //edit - change reply->editReply so that the ai command will run
-    //interaction already done error
-    //cause after "await interaction.deferReply();" we can only use editReply
-    //but in normal deferReply() is not so reply() will be used
-    await interaction.reply(
+    await interaction.editReply(
       `⏰ Reminder set for **${dayjs(runAt).format(
         "YYYY-MM-DD HH:mm"
       )}**: "${reminderText}" (ID: ${reminder._id})`
